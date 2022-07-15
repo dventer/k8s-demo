@@ -1,0 +1,12 @@
+{{- if .Values.security_group_id }}
+apiVersion: vpcresources.k8s.aws/v1beta1
+kind: SecurityGroupPolicy
+metadata:
+  name: allow-rds-access
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "sample-app.selectorLabels" . | nindent 6 }}
+  securityGroups:
+    groupIds: {{ .Values.security_group_id }}
+{{ end }}

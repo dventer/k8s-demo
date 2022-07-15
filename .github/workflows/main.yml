@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    paths:
+      - 'helm/**'
+      - 'sample-app/**'
+
+    branches:
+      - master
+
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+    test:
+      runs-on: self-hosted
+      
+      steps:
+        
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: install dependency
+        run: |
+         pip install -r requirements.txt
+         python3 app/test.py
+
+
+    deploy: 
+      if: ${{ github.ref == 'refs/heads/main' }}
+      runs-on: ubuntu-latest
+
+      steps: 
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: build & push docker images
+        shell: bash
+        run: |
+          make build push
+
+      - name: deploy to cluster
+        run: make deploy
+
+      
+
+
