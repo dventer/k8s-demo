@@ -8,7 +8,7 @@ CHART=sample-deployment
 .PHONY: build
 build: ## Build docker image
 	echo "Building docker image ..."
-	@docker build ./${APP} -t ${REGISTRY}/${APP}:$(TAG) -f ${APP}/Dockerfile
+	@docker build ./${APP} -t ${REGISTRY}/${APP}:${TAG} -f ${APP}/Dockerfile
 
 
 .PHONY: push

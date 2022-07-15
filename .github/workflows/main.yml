@@ -3,8 +3,7 @@ name: CI
 on:
   push:
     paths:
-      - 'helm/**'
-      - 'sample-app/**'
+      - '**'
 
     branches:
       - main
@@ -48,7 +47,8 @@ jobs:
       - name: build & push docker images
         shell: bash
         run: |
-          make build push
+          make build
+          make push
 
       - name: deploy to cluster
         env:
