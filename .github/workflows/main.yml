@@ -7,7 +7,7 @@ on:
       - 'sample-app/**'
 
     branches:
-      - master
+      - main
 
   pull_request:
     branches:
@@ -24,7 +24,7 @@ jobs:
       
       - name: install dependency
         run: |
-         pip install -r requirements.txt
+         pip install -r sample-app/requirements.txt
          python3 sample-app/app/test.py
 
 
