@@ -47,8 +47,7 @@ jobs:
       - name: build & push docker images
         shell: bash
         run: |
-          make build
-          make push
+          make build push
 
       - name: deploy to cluster
         env:
@@ -57,7 +56,7 @@ jobs:
         run: |
           export SA_TOKEN=$(echo $SERVICE_ACCOUNT | base64 -d)
           echo $CA_CRT | base64 -d > /tmp/ca.crt
-          make deploy
+          make kubeconfig deploy
 
       
 
