@@ -7,6 +7,11 @@ jobs:
       runs-on: ubuntu-latest
       
       steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+          
       - name: Helm Rollback
         shell: bash
         env:

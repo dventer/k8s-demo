@@ -3,7 +3,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return f'VERSI 2'
+    return f'VERSI 3'
 
 @app.route("/healthz")
 def healthz():
