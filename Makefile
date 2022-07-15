@@ -1,6 +1,6 @@
 # set default shell
 SHELL=/bin/bash -o pipefail -o errexit
-TAG ?= $(shell git rev-parse --short origin/master)
+TAG=$(shell git rev-parse --short origin/master)
 REGISTRY=venter
 APP=sample-app
 CHART=sample-deployment
