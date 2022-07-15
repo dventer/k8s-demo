@@ -15,17 +15,17 @@ on:
 
 jobs:
     test:
-      runs-on: self-hosted
+      runs-on: ubuntu-latest
       
       steps:
         
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       
       - name: install dependency
         run: |
          pip install -r requirements.txt
-         python3 app/test.py
+         python3 sample-app/app/test.py
 
 
     deploy: 
@@ -35,7 +35,7 @@ jobs:
       steps: 
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 2
 

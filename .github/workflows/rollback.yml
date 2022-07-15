@@ -4,14 +4,9 @@ on: workflow_dispatch
 
 jobs:
     rollback:
-      runs-on: self-hosted
+      runs-on: ubuntu-latest
       
       steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
-
       - name: Helm Rollback
         shell: bash
         run: make rollback
