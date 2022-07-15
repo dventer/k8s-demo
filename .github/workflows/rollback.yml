@@ -9,4 +9,10 @@ jobs:
       steps:
       - name: Helm Rollback
         shell: bash
-        run: make rollback
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
+          CA_CRT: ${{ secrets.CA_CRT }}
+        run: |
+          export SA_TOKEN=$(echo $SERVICE_ACCOUNT | base64 -d)
+          echo $CA_CRT | base64 -d > /tmp/ca.crt
+          make kubeconfig rollback
