@@ -25,8 +25,8 @@ kubeconfig:
 .PHONY: deploy
 deploy:
 	@helm upgrade --install ${APP} charts/${CHART} \
-	--set image.repository=${REGISTRY}/${APP} \
-	--set image.tag=${TAG} -n ${APP} --set project=${APP} --set environment=staging --set squad=data
+	--set containers.image.repository=${REGISTRY}/${APP} \
+	--set containers.image.tag=${TAG} -n ${APP} --set project=${APP} --set environment=staging --set squad=data
 
 .PHONY: rollback
 rollback: 
