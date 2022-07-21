@@ -6,6 +6,7 @@ function dry_run {
 	HELM_REPO=https://dventer.github.io/helm-chart
 	LIST_NAMESPACE=$(yq e '.project[]' ${changes})
 	kubectl get ns --no-headers | awk '{print $1}' > namespace
+	cat namespace
 	for namespace in ${LIST_NAMESPACE};do 
 			if ! [[ $(grep -e "^${namespace}$" namespace) ]]; then
 				helm upgrade --install namespace-rbac --repo ${HELM_REPO} namespace-rbac \
@@ -42,6 +43,7 @@ function send_token {
 	((retry++))
 	done
 
+	#### ADD Variable SERVICE_ACCOUNT
 	curl --request POST -H "Authorization: Bearer $ACCESS_TOKEN" \
 	--url "https://api.bitbucket.org/2.0/repositories/jefriadv/$1/pipelines_config/variables/" \
 	--header 'Accept: application/json' \
@@ -54,6 +56,7 @@ function send_token {
 
 	sleep 2 && printf "\n\n"
 
+	#### ADD Variable CA_CERT
 	curl --request POST -H "Authorization: Bearer $ACCESS_TOKEN" \
 	--url "https://api.bitbucket.org/2.0/repositories/jefriadv/$1/pipelines_config/variables/" \
 	--header 'Accept: application/json' \
@@ -62,5 +65,18 @@ function send_token {
 	"key": "CA_CERT",
 	"value": "'"${CA_CERT}"'",
 	"secured": true
+	}'
+
+	sleep 2 && printf "\n\n"
+	
+	#### ADD Variable EKS_ADDRESS
+	curl --request POST -H "Authorization: Bearer $ACCESS_TOKEN" \
+	--url "https://api.bitbucket.org/2.0/repositories/jefriadv/$1/pipelines_config/variables/" \
+	--header 'Accept: application/json' \
+	--header 'Content-Type: application/json' \
+	--data '{
+	"key": "EKS_ADDRESS",
+	"value": "'"${EKS_ADDRESS}"'",
+	"secured": false
 	}'
 }

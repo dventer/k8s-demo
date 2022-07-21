@@ -1,5 +1,9 @@
 name: CI
 
+permissions:
+  id-token: write
+  contents: read
+  
 on:
   push:
     paths:
@@ -17,8 +21,14 @@ on:
 jobs:
     dry-run:
       runs-on: ubuntu-latest
+      container:
+          image: venter/kubetools:v1.0.0
+          options: --user root
       
       steps:
+
+      - name: adding github workspace as safe directory
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
         
       - name: Checkout
         uses: actions/checkout@v3
@@ -31,17 +41,19 @@ jobs:
           EKS_STAGING_CA: ${{ secrets.EKS_STAGING_CA }}
           OAUTH_KEY: ${{ secrets.OAUTH_KEY }}
           OAUTH_SECRET: ${{ secrets.OAUTH_SECRET }}
+          EKS_ADDRESS: ${{ secrets.EKS_ADDRESS }}
+        shell: bash
         run: |
-          if [[ $(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} */*/*.yaml) --name-only | wc -l > 1;
-            then echo "Multiple changes in .yaml file not allowed" && exit 1;
-          else 
-            export changes=$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} */*/*.yaml) --name-only);fi
+          changes=$(git diff ${{ github.event.pull_request.base.sha }} ${{ github.sha }} --diff-filter=ACMRT --name-only */*/*.yaml)
           make kubeconfig plan
       
 
     deploy: 
       if: ${{ github.ref == 'refs/heads/main' }}
       runs-on: ubuntu-latest
+      container:
+          image: venter/kubetools:v1.0.0
+          options: --user root
 
       steps: 
 
@@ -56,6 +68,8 @@ jobs:
           EKS_STAGING_CA: ${{ secrets.EKS_STAGING_CA }}
           OAUTH_KEY: ${{ secrets.OAUTH_KEY }}
           OAUTH_SECRET: ${{ secrets.OAUTH_SECRET }}
+          EKS_ADDRESS: ${{ secrets.EKS_ADDRESS }}
+        shell: bash
         run: |
           make kubeconfig deploy
 
