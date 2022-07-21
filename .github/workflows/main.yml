@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     paths:
-      - '**'
+      - '*/*/*.yaml'
 
     branches:
       - main
@@ -11,6 +11,8 @@ on:
   pull_request:
     branches:
       - "*"
+    paths:
+      - '*/*/*.yaml'
 
 jobs:
     test:
@@ -20,12 +22,22 @@ jobs:
         
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       
-      - name: install dependency
+      - name: Helm Dry Run
+        env:
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+          EKS_STAGING_CA: ${{ secrets.EKS_STAGING_CA }}
+          OAUTH_KEY: ${{ secrets.OAUTH_KEY }}
+          OAUTH_SECRET: ${{ secrets.OAUTH_SECRET
         run: |
-         pip install -r sample-app/requirements.txt
-         python3 sample-app/app/test.py
-
+          if [[ $(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} */*/*.yaml) --name-only | wc -l > 1;
+            then echo "Multiple changes in .yaml file not allowed" && exit 1;
+          else 
+            export changes=$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} */*/*.yaml) --name-only);fi
+          make kubeconfig plan
+      
 
     deploy: 
       if: ${{ github.ref == 'refs/heads/main' }}
@@ -36,26 +48,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.REGISTRY_USER }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-
-      - name: build & push docker images
-        shell: bash
-        run: |
-          make build push
-
-      - name: deploy to cluster
+      - name: Deploy to cluster
         env:
-          SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
-          CA_CRT: ${{ secrets.CA_CRT }}
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+          EKS_STAGING_CA: ${{ secrets.EKS_STAGING_CA }}
+          OAUTH_KEY: ${{ secrets.OAUTH_KEY }}
+          OAUTH_SECRET: ${{ secrets.OAUTH_SECRET }}
         run: |
-          export SA_TOKEN=$(echo $SERVICE_ACCOUNT | base64 -d)
-          echo $CA_CRT | base64 -d > /tmp/ca.crt
           make kubeconfig deploy
 
       

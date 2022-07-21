@@ -1,33 +1,20 @@
 # set default shell
 SHELL=/bin/bash -o pipefail -o errexit
-TAG := $(shell git rev-parse --short origin/main)
-REGISTRY=venter
-APP=sample-app
-CHART=sample-deployment
-
-.PHONY: build
-build: ## Build docker image
-	echo "Building docker image ..."
-	@docker build ./${APP} -t ${REGISTRY}/${APP}:$(TAG) -f ${APP}/Dockerfile
-
-
-.PHONY: push
-push:
-	docker push ${REGISTRY}/${APP}:$(TAG)
+ADMIN_TOKEN := $(shell echo "$$ADMIN_TOKEN" | base64 -d)
 
 .PHONY: kubeconfig
 kubeconfig:
-	@kubectl config set-cluster eks-staging --server=https://5EA22ED7B31D18E08DA9BFD2B0AB5A11.gr7.ap-southeast-1.eks.amazonaws.com \
-	--certificate-authority=/tmp/ca.crt --embed-certs
-	@kubectl config set-credentials sample-app --token ${SA_TOKEN}
-	@kubectl config set-context sample-app --user=sample-app --cluster=eks-staging
-	@kubectl config use-context sample-app
+	@kubectl config set-cluster default --server=https://5EA22ED7B31D18E08DA9BFD2B0AB5A11.gr7.ap-southeast-1.eks.amazonaws.com
+	@kubectl config set-credentials default --token ${ADMIN_TOKEN}
+	@kubectl config set-context default --user=default --cluster=default
+	@yq -i '.clusters[].cluster.certificate-authority-data = strenv(EKS_STAGING_CA)' ~/.kube/config
+	@kubectl config use-context default
+
 .PHONY: deploy
 deploy:
-	@helm upgrade --install ${APP} charts/${CHART} \
-	--set containers.image.repository=${REGISTRY}/${APP} \
-	--set containers.image.tag=${TAG} -n ${APP} --set project=${APP} --set environment=staging --set squad=data
+	@source scripts/deploy.sh && deploy
 
-.PHONY: rollback
-rollback: 
-	@helm rollback ${APP} -n ${APP}
+.PHONY: plan
+plan:
+	@source scripts/deploy.sh && dry_run
+
