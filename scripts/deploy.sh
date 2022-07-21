@@ -7,6 +7,7 @@ function dry_run {
 	LIST_NAMESPACE=$(yq e '.project[]' ${changes})
 	kubectl get ns --no-headers | awk '{print $1}' > namespace
 	cat namespace
+	echo $changes
 	for namespace in ${LIST_NAMESPACE};do 
 			if ! [[ $(grep -e "^${namespace}$" namespace) ]]; then
 				helm upgrade --install namespace-rbac --repo ${HELM_REPO} namespace-rbac \
@@ -16,6 +17,8 @@ function dry_run {
 		done
 }
 function deploy {
+	echo $changes
+	cat namespace
 	for namespace in ${LIST_NAMESPACE};do 
 			if ! [[ $(grep -e "^${namespace}$" namespace) ]]; then
 				helm upgrade --install namespace-rbac --repo ${HELM_REPO} namespace-rbac \
