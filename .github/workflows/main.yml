@@ -20,6 +20,7 @@ on:
 
 jobs:
     dry-run:
+      if: ${{ github.ref != 'refs/heads/main' }}
       runs-on: ubuntu-latest
       container:
           image: venter/kubetools:v1.0.0
@@ -44,7 +45,7 @@ jobs:
           EKS_ADDRESS: ${{ secrets.EKS_ADDRESS }}
         shell: bash
         run: |
-          changes=$(git diff ${{ github.event.pull_request.base.sha }} ${{ github.sha }} --diff-filter=ACMRT --name-only */*/*.yaml)
+          export changes=$(git diff ${{ github.event.pull_request.base.sha }} ${{ github.sha }} --diff-filter=ACMRT --name-only */*/*.yaml)
           make kubeconfig plan
       
 
@@ -73,7 +74,7 @@ jobs:
           EKS_ADDRESS: ${{ secrets.EKS_ADDRESS }}
         shell: bash
         run: |
-          changes=$(git diff HEAD^ --diff-filter=ACMRT --name-only */*/*.yaml)
+          export changes=$(git diff HEAD^ HEAD --diff-filter=ACMRT --name-only */*/*.yaml | xargs)
           make kubeconfig deploy
 
       
