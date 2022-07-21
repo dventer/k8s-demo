@@ -1,8 +1,5 @@
 name: CI
 
-permissions:
-  id-token: write
-  contents: read
   
 on:
   push:
@@ -27,7 +24,7 @@ jobs:
       steps:
         
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
       
