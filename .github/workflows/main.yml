@@ -56,6 +56,8 @@ jobs:
           options: --user root
 
       steps: 
+      - name: adding github workspace as safe directory
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -71,6 +73,7 @@ jobs:
           EKS_ADDRESS: ${{ secrets.EKS_ADDRESS }}
         shell: bash
         run: |
+          changes=$(git diff HEAD^ --diff-filter=ACMRT --name-only */*/*.yaml)
           make kubeconfig deploy
 
       
