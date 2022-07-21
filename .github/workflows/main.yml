@@ -41,7 +41,8 @@ jobs:
           EKS_ADDRESS: ${{ secrets.EKS_ADDRESS }}
         shell: bash
         run: |
-          ls -l
+          ls -la
+          git --version
           changes=$(git diff ${{ github.event.pull_request.base.sha }} ${{ github.sha }} --diff-filter=ACMRT --name-only */*/*.yaml)
           make kubeconfig
           kubectl get node
