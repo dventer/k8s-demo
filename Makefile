@@ -7,7 +7,7 @@ kubeconfig:
 	@kubectl config set-cluster default --server=${EKS_ADDRESS}
 	@kubectl config set-credentials default --token ${ADMIN_TOKEN}
 	@kubectl config set-context default --user=default --cluster=default
-	@yq -i '.clusters[].cluster.certificate-authority-data = strenv(EKS_STAGING_CA)' /root/.kube/config
+	@yq -i '.clusters[].cluster.certificate-authority-data = strenv(EKS_STAGING_CA)' ~/.kube/config
 	@kubectl config use-context default
 
 .PHONY: deploy

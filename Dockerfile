@@ -1,12 +1,12 @@
 FROM alpine:3.16.1
 
 ENV  TERRAFORM_VERSION=1.1.7 \
-     YQ_VERSION=4.14.1 \
+     YQ_VERSION=4.25.3 \
      KUBECTL_VERSION=1.24.3 \
      HELM_VERSION=3.7.1 \
      HELM_DIFF_VERSION=3.1.3 
 
-RUN  apk add --no-cache openssl git bash curl gettext jq && \
+RUN  apk add --no-cache openssl git bash curl gettext jq make && \
      curl -L https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 -o /usr/bin/yq && \
      chmod 0755 /usr/bin/yq && \
      curl -L https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip | busybox unzip -p - > /usr/bin/terraform && \
