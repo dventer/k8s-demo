@@ -1,5 +1,8 @@
 name: CI
 
+permissions:
+  id-token: write
+  contents: read
   
 on:
   push:
@@ -20,11 +23,12 @@ jobs:
       runs-on: ubuntu-latest
       container:
           image: venter/kubetools:v1.0.0
+          options: --user root
       
       steps:
         
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       
@@ -34,6 +38,7 @@ jobs:
           EKS_STAGING_CA: ${{ secrets.EKS_STAGING_CA }}
           OAUTH_KEY: ${{ secrets.OAUTH_KEY }}
           OAUTH_SECRET: ${{ secrets.OAUTH_SECRET }}
+          EKS_ADDRESS: ${{ secrets.EKS_ADDRESS }}
         shell: bash
         run: |
           ls -l
@@ -48,6 +53,7 @@ jobs:
       runs-on: ubuntu-latest
       container:
           image: venter/kubetools:v1.0.0
+          options: --user root
 
       steps: 
 
@@ -62,6 +68,7 @@ jobs:
           EKS_STAGING_CA: ${{ secrets.EKS_STAGING_CA }}
           OAUTH_KEY: ${{ secrets.OAUTH_KEY }}
           OAUTH_SECRET: ${{ secrets.OAUTH_SECRET }}
+          EKS_ADDRESS: ${{ secrets.EKS_ADDRESS }}
         shell: bash
         run: |
           make kubeconfig deploy

@@ -43,6 +43,7 @@ function send_token {
 	((retry++))
 	done
 
+	#### ADD Variable SERVICE_ACCOUNT
 	curl --request POST -H "Authorization: Bearer $ACCESS_TOKEN" \
 	--url "https://api.bitbucket.org/2.0/repositories/jefriadv/$1/pipelines_config/variables/" \
 	--header 'Accept: application/json' \
@@ -55,6 +56,7 @@ function send_token {
 
 	sleep 2 && printf "\n\n"
 
+	#### ADD Variable CA_CERT
 	curl --request POST -H "Authorization: Bearer $ACCESS_TOKEN" \
 	--url "https://api.bitbucket.org/2.0/repositories/jefriadv/$1/pipelines_config/variables/" \
 	--header 'Accept: application/json' \
@@ -63,5 +65,18 @@ function send_token {
 	"key": "CA_CERT",
 	"value": "'"${CA_CERT}"'",
 	"secured": true
+	}'
+
+	sleep 2 && printf "\n\n"
+	
+	#### ADD Variable EKS_ADDRESS
+	curl --request POST -H "Authorization: Bearer $ACCESS_TOKEN" \
+	--url "https://api.bitbucket.org/2.0/repositories/jefriadv/$1/pipelines_config/variables/" \
+	--header 'Accept: application/json' \
+	--header 'Content-Type: application/json' \
+	--data '{
+	"key": "EKS_ADDRESS",
+	"value": "'"${EKS_ADDRESS}"'",
+	"secured": false
 	}'
 }

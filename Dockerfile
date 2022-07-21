@@ -1,4 +1,4 @@
-FROM alpine:3.15.5
+FROM alpine:3.16.1
 
 ENV  TERRAFORM_VERSION=1.1.7 \
      YQ_VERSION=4.14.1 \
