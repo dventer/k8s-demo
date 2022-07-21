@@ -33,8 +33,9 @@ jobs:
           OAUTH_SECRET: ${{ secrets.OAUTH_SECRET }}
         run: |
           changes=$(git diff --diff-filter=ACMRT --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} */*/*.yaml)
-          echo $changes
-          make kubeconfig plan
+          make kubeconfig
+          kubectl get ns
+          make plan
       
 
     deploy: 
