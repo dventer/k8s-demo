@@ -42,6 +42,7 @@ jobs:
         shell: bash
         run: |
           ls -la
+          cat .git/HEAD
           git --version
           changes=$(git diff ${{ github.event.pull_request.base.sha }} ${{ github.sha }} --diff-filter=ACMRT --name-only */*/*.yaml)
           make kubeconfig
