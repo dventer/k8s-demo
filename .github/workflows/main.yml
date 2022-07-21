@@ -35,7 +35,8 @@ jobs:
           OAUTH_KEY: ${{ secrets.OAUTH_KEY }}
           OAUTH_SECRET: ${{ secrets.OAUTH_SECRET }}
         run: |
-          changes=$(git diff --diff-filter=ACMRT --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} */*/*.yaml)
+          git branch --show-current
+          changes=$(git diff ${{ github.event.pull_request.base.sha }} ${{ github.sha }} --diff-filter=ACMRT --name-only */*/*.yaml)
           make kubeconfig
           kubectl get node
           make plan
