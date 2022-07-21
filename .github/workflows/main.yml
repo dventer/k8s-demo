@@ -32,7 +32,7 @@ jobs:
           OAUTH_KEY: ${{ secrets.OAUTH_KEY }}
           OAUTH_SECRET: ${{ secrets.OAUTH_SECRET }}
         run: |
-          if [[ $(git diff --diff-filter=ACMRT --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} */*/*.yaml | wc -l) ]] > 1;
+          if [[ $(git diff --diff-filter=ACMRT --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} */*/*.yaml | wc -l) > 1 ]];
             then echo "Multiple changes in .yaml file not allowed" && exit 1;
           else 
             export changes=$(git diff --diff-filter=ACMRT --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} */*/*.yaml) --name-only);fi
