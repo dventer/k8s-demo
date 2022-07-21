@@ -32,7 +32,7 @@ jobs:
           OAUTH_KEY: ${{ secrets.OAUTH_KEY }}
           OAUTH_SECRET: ${{ secrets.OAUTH_SECRET }}
         run: |
-          changes=$(git diff --diff-filter=ACMRT --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} */*/*.yaml) --name-only);fi
+          changes=$(git diff --diff-filter=ACMRT --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} */*/*.yaml) --name-only)
           echo $changes
           make kubeconfig plan
       
