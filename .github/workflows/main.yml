@@ -38,6 +38,7 @@ jobs:
           EKS_STAGING_CA: ${{ secrets.EKS_STAGING_CA }}
           OAUTH_KEY: ${{ secrets.OAUTH_KEY }}
           OAUTH_SECRET: ${{ secrets.OAUTH_SECRET }}
+        shell: bash
         run: |
           ls -l
           changes=$(git diff ${{ github.event.pull_request.base.sha }} ${{ github.sha }} --diff-filter=ACMRT --name-only */*/*.yaml)
@@ -66,6 +67,7 @@ jobs:
           EKS_STAGING_CA: ${{ secrets.EKS_STAGING_CA }}
           OAUTH_KEY: ${{ secrets.OAUTH_KEY }}
           OAUTH_SECRET: ${{ secrets.OAUTH_SECRET }}
+        shell: bash
         run: |
           make kubeconfig deploy
 
