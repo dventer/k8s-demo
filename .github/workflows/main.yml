@@ -17,6 +17,9 @@ on:
 jobs:
     dry-run:
       runs-on: ubuntu-latest
+      container:
+          image: venter/kubetools:v1.0.0
+          options: --user root
       
       steps:
         
@@ -34,12 +37,16 @@ jobs:
         run: |
           changes=$(git diff --diff-filter=ACMRT --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} */*/*.yaml)
           make kubeconfig
+          kubectl get node
           make plan
       
 
     deploy: 
       if: ${{ github.ref == 'refs/heads/main' }}
       runs-on: ubuntu-latest
+      container:
+          image: venter/kubetools:v1.0.0
+          options: --user root
 
       steps: 
 
