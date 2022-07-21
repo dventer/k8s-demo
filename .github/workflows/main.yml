@@ -23,7 +23,6 @@ jobs:
       runs-on: ubuntu-latest
       container:
           image: venter/kubetools:v1.0.0
-          options: --user root
       
       steps:
         
@@ -52,7 +51,6 @@ jobs:
       runs-on: ubuntu-latest
       container:
           image: venter/kubetools:v1.0.0
-          options: --user root
 
       steps: 
 
